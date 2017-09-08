@@ -1,0 +1,67 @@
+$a = Get-Date
+"Current time is " + $a.Hour + ":" + $a.Minute + ":" + $a.second
+
+$b= [TimezoneInfo]::Local
+"The current Timezone is " + $b
+
+function Get-Uptime {
+   $os = Get-WmiObject win32_operatingsystem
+   $uptime = (Get-Date) - ($os.ConvertToDateTime($os.lastbootuptime))
+   $Display = "Uptime: " + $Uptime.Days + " days, " + $Uptime.Hours + " hours, " + $Uptime.Minutes + " minutes" 
+   Write-Output $Display
+}
+
+$c = Get-Uptime
+"Length of  " + $c
+############################################################
+#windows Version
+############################################################
+
+[System.Environment]::OSVersion.Version
+
+Function WinName
+{
+(Get-WmiObject Win32_OperatingSystem).Name
+}
+WinName
+
+
+$d = Get-WmiObject win32_processor
+"cpu brand " + $z.Caption
+"cpu type" + $z.ProcessorID
+
+
+#Ram amount
+$e =(systeminfo | Select-String 'Total Physical Memory:').ToString().Split(':')[1].Trim()
+"Total System ram "  + $e
+
+
+#free and used hdd space/mounted file systems
+GET-WMIOBJECT win32_logicaldisk | FORMAT-TABLE
+
+
+###########Get Domain Controller info#######################
+
+
+
+
+
+
+
+
+#######################Hostname/Domain#########################
+$hostname=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain
+"The hostname and domain are: "  + $hostname
+
+######################List of users###############################
+
+#Local users including SID, 
+Get-WmiObject -Class Win32_UserAccount
+
+
+
+
+
+
+
+
