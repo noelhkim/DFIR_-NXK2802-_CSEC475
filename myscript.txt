@@ -1,9 +1,14 @@
+
+#Current time
+
 $a = Get-Date
 "Current time is " + $a.Hour + ":" + $a.Minute + ":" + $a.second
 
+#Time zone of PC
 $b= [TimezoneInfo]::Local
 "The current Timezone is " + $b
 
+#PC Uptime
 function Get-Uptime {
    $os = Get-WmiObject win32_operatingsystem
    $uptime = (Get-Date) - ($os.ConvertToDateTime($os.lastbootuptime))
@@ -13,30 +18,28 @@ function Get-Uptime {
 
 $c = Get-Uptime
 "Length of  " + $c
-############################################################
-#windows Version
-############################################################
 
+
+#windows Version
 [System.Environment]::OSVersion.Version
 
+Get Typical name
 Function WinName
 {
 (Get-WmiObject Win32_OperatingSystem).Name
 }
 WinName
 
-
+#CPU Brand/Type
 $d = Get-WmiObject win32_processor
 "cpu brand " + $z.Caption
 "cpu type" + $z.ProcessorID
-
 
 #Ram amount
 $e =(systeminfo | Select-String 'Total Physical Memory:').ToString().Split(':')[1].Trim()
 "Total System ram "  + $e
 
-
-#free and used hdd space/mounted file systems
+#HDD amount/list hard drives/List mounted file systems
 GET-WMIOBJECT win32_logicaldisk | FORMAT-TABLE
 
 
@@ -48,20 +51,83 @@ GET-WMIOBJECT win32_logicaldisk | FORMAT-TABLE
 
 
 
-
-#######################Hostname/Domain#########################
+#Get hostname and domain
 $hostname=(Get-WmiObject win32_computersystem).DNSHostName+"."+(Get-WmiObject win32_computersystem).Domain
 "The hostname and domain are: "  + $hostname
 
-######################List of users###############################
 
 #Local users including SID, 
 Get-WmiObject -Class Win32_UserAccount
 
 
 
+##################Start at boot####################################
 
 
+#Services at boot 
+Get-Service |select -property name,starttype
+
+#programs on boot
+Get-CimInstance -ClassName Win32_StartupCommand |
+  Select-Object -Property Command, Description, User, Location 
+
+#list of scheduled tasks
+Get-ScheduledTask
 
 
+#get ARP Table
+arp-a
+
+#MAC ADdresses for all interfaces 
+Getmac
+
+#Routing table
+Get-Netroute
+
+#Ip address 
+Get-NetIPAddress
+
+#Get DHCP server
+
+$f = [Net.NetworkInformation.NetworkInterface]::GetAllNetworkInterfaces() |
+                Where-Object { $_.GetIPProperties() | Select-Object -ExpandProperty DhcpServerAddresses }
+$f
+$f.GetIPProperties().DhcpServerAddresses
+
+#Get DNS server
+Get-NetIPConfiguration | Select-Object -ExpandProperty DNSServer
+
+#Get gateway for all interfaces
+Get-NetIPConfiguration | Foreach IPv4DefaultGateway
+
+#Show listening services Ip address its binded to , port service it is listening , protocol, service/process name
+
+
+netstat -pntaefno
+
+
+#Show established connections
+Get-NetTCPConnection
+ 
+#Get DNS cache 
+ Show-DnsServerCache
+ 
+ #Network shares,printers, wifi access profiles
+ 
+ Get-SMBShare
+ Get-WmiObject -class "Win32_Printer"
+ netsh wlan show profile
+ 
+ 
+ #List of installed Software
+ Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize
+
+#Show Process name/ID,
+
+Get-Process
+
+#Show process Parent ID
+
+Get-WmiObject Win32_Process | Select ProcessID, ParentProcessID | FT -Auto
+ 
 
