@@ -123,11 +123,13 @@ Get-NetTCPConnection
  Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | Select-Object DisplayName, DisplayVersion, Publisher, InstallDate | Format-Table –AutoSize
 
 #Show Process name/ID,
-
 Get-Process
 
 #Show process Parent ID
-
 Get-WmiObject Win32_Process | Select ProcessID, ParentProcessID | FT -Auto
  
+#Driver list
+Get-WmiObject Win32_PnPSignedDriver| select DeviceName, DriverVersion, Manufacturer,Location,DriverDate,DriverProviderName
+
+
 
