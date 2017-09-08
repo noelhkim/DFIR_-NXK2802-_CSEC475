@@ -132,4 +132,12 @@ Get-WmiObject Win32_Process | Select ProcessID, ParentProcessID | FT -Auto
 Get-WmiObject Win32_PnPSignedDriver| select DeviceName, DriverVersion, Manufacturer,Location,DriverDate,DriverProviderName
 
 
+#Add 3 more
+#search within NetTCPIP module.
+Get-Command –Module NetTCPIP –Name *IP*
 
+#shutdown
+Start-Sleep 60; Restart-Computer –Force –ComputerName TARGETMACHINE
+
+#list files in directory
+Get-ChildItem
